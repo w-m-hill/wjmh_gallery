@@ -1,0 +1,538 @@
+<html><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>wjmh</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;700&display=swap');
+
+  :root {
+    --bg-color: #121212;
+    --text-color: #e0e0e0;
+    --accent-color: #BB86FC;
+    --secondary-color: #03DAC6;
+    --surface-color: #1E1E1E;
+    --error-color: #CF6679;
+  }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Raleway', 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    transition: all 0.3s ease;
+  }
+  header {
+    background-color: var(--surface-color);
+    padding: 40px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, var(--accent-color), var(--secondary-color));
+    opacity: 0.1;
+    z-index: 0;
+  }
+  header .header-content {
+    position: relative;
+    z-index: 2;
+  }
+  header h1 {
+    font-size: 3.5em;
+    margin-bottom: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  }
+  header p {
+    font-size: 1.2em;
+    font-weight: 300;
+    letter-spacing: 1px;
+    color: var(--secondary-color);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  .neural-network {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    z-index: 1;
+  }
+  nav {
+    background-color: var(--surface-color);
+    padding: 15px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  }
+  nav ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+  }
+  nav ul li a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 1.1em;
+    transition: color 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 400;
+  }
+  nav ul li a:hover {
+    color: var(--accent-color);
+  }
+  main {
+    flex-grow: 1;
+    padding: 20px;
+  }
+  .categories {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .category-btn {
+    padding: 10px 20px;
+    background-color: var(--surface-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .category-btn:hover {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+  }
+  .category-btn.active {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 250px;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+  }
+  .gallery-item:hover {
+    transform: scale(1.02);
+  }
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(30%) contrast(120%);
+    transition: all 0.3s ease;
+  }
+  .gallery-item:hover img {
+    filter: grayscale(0%) contrast(100%);
+  }
+  .image-title {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: var(--text-color);
+    padding: 10px;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+  }
+  .gallery-item:hover .image-title {
+    transform: translateY(0);
+  }
+  .wide {
+    grid-column: span 2;
+  }
+  .tall {
+    grid-row: span 2;
+  }
+  .large {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+  }
+  .modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  .modal-image {
+    max-width: 90%;
+    max-height: 80%;
+    object-fit: contain;
+    border-radius: 4px;
+    box-shadow: 0 0 20px rgba(187, 134, 252, 0.3);
+  }
+  .modal-description {
+    color: var(--text-color);
+    margin-top: 20px;
+    max-width: 600px;
+    text-align: center;
+    font-weight: 300;
+    line-height: 1.6;
+  }
+  .close {
+    color: var(--text-color);
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  .close:hover {
+    color: var(--accent-color);
+  }
+  .nav-arrow {
+    color: var(--text-color);
+    position: absolute;
+    top: 50%;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    background: rgba(30, 30, 30, 0.7);
+    padding: 10px;
+    border-radius: 50%;
+    transform: translateY(-50%);
+    transition: all 0.3s ease;
+  }
+  .nav-arrow:hover {
+    background: var(--accent-color);
+    color: var(--bg-color);
+  }
+  #prevArrow {
+    left: 20px;
+  }
+  #nextArrow {
+    right: 20px;
+  }
+  footer {
+    background-color: var(--surface-color);
+    color: var(--text-color);
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 20px;
+  }
+  @media (max-width: 768px) {
+    .gallery {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .wide, .tall, .large {
+      grid-column: span 1;
+      grid-row: span 1;
+    }
+    nav ul {
+      flex-direction: column;
+      align-items: center;
+    }
+    header h1 {
+      font-size: 2.5em;
+    }
+    header p {
+      font-size: 1em;
+    }
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="neural-network">
+      <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+      </svg>
+    </div>
+    <div class="header-content">
+      <h1>wjmh gallery</h1>
+      <p>under construction.</p>
+    </div>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="https://wjmh.dev">Home</a></li>
+      <li><a href="https://wjmh.dev/gallery/">Gallery</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <div class="categories">
+      <button class="category-btn active" data-category="all">All</button>
+      {% for category, photos in gallery.items() %}
+      	<button class="category-btn" data-category="{{ category }}">{{ category }}</button>
+      {% endfor %}      
+    </div>
+
+    <div class="gallery">
+    {% for category, photos in gallery.items() %}
+    	     {% for photo, caption in photos %}
+                <div class="gallery-item large" data-category="{{ category }}">
+		<img src="{{ url_for('static', filename='photos/' + category + '/' + photo) }}" alt="{{ caption }}" width="800" height="800">
+		<div class="image-title">{{ caption }}</div>
+	      </div>
+            {% endfor %}
+    {% endfor %}
+
+      
+    </div>
+  </main>
+
+  <div id="imageModal" class="modal">
+    <span class="close">&times;</span>
+    <div class="modal-content">
+      <img class="modal-image" src="" alt="Expanded image">
+      <p class="modal-description"></p>
+    </div>
+    <div class="nav-arrow" id="prevArrow">&#10094;</div>
+    <div class="nav-arrow" id="nextArrow">&#10095;</div>
+  </div>
+
+  <footer>
+    <p>&copy; 2023 wjmh.</p>
+  </footer>
+
+  <script>
+    const gallery = document.querySelector('.gallery');
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.querySelector('.modal-image');
+    const modalDescription = document.querySelector('.modal-description');
+    const closeBtn = document.querySelector('.close');
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    const prevArrow = document.getElementById('prevArrow');
+    const nextArrow = document.getElementById('nextArrow');
+
+    const descriptions = {
+      "Nature Unleashed": "A raw and powerful depiction of nature's untamed beauty. This large format image captures the essence of wilderness, showcasing the dramatic interplay of light and shadow in a breathtaking landscape.",
+      "Urban Jungle": "A stark, gritty portrayal of city life, where concrete and steel create a modern labyrinth. This image delves into the heart of urban existence, revealing both its challenges and hidden beauty.",
+      "Gastronomic Revolution": "An avant-garde culinary creation that pushes the boundaries of traditional cuisine. This dish is a bold statement in the world of gastronomy, blending unexpected flavors and textures.",
+      "Wanderlust Redefined": "A panoramic view of an unconventional travel destination that challenges the norms of tourism. This wide format image embodies the spirit of adventure and the thrill of exploring uncharted territories.",
+      "Tomorrow's Skyline": "A visionary architectural concept that reimagines urban living. This tall image showcases a futuristic design that harmonizes form, function, and sustainability in a groundbreaking way.",
+      "Digital Frontier": "A glimpse into the cutting edge of technology, presenting innovations that are set to reshape our world. This image captures the essence of human ingenuity and the relentless march of progress.",
+      "Art Unbound": "A provocative piece of modern art that defies convention and sparks dialogue. This artwork pushes the boundaries of creativity, challenging viewers to question their perceptions and beliefs.",
+      "Wild Encounters": "A rare and intimate moment with wildlife, captured in its natural habitat. This wide-angle shot highlights the raw beauty of the animal kingdom and the delicate balance of ecosystems.",
+      "Style Revolution": "A bold fashion statement that breaks all the rules. This image showcases avant-garde design that pushes the boundaries of wearable art, blending unconventional materials and forms.",
+      "Adrenaline Rush": "An electrifying moment of extreme sports action, frozen in time. This tall image captures the intensity, risk, and skill involved in pushing human physical limits to the edge.",
+      "Cosmic Odyssey": "A mind-bending visualization of a space phenomenon that challenges our understanding of the universe. This image represents the frontier of astronomical discovery and the mysteries that lie beyond.",
+      "Aquatic Dreamscape": "A surreal underwater scene that reveals the alien-like beauty of marine ecosystems. This image unveils a world rarely seen by human eyes, showcasing the fragile wonders of our oceans."
+    };
+
+    let currentImageIndex = 0;
+    let visibleItems = [];
+
+    function updateVisibleItems() {
+      visibleItems = Array.from(document.querySelectorAll('.gallery-item:not([style*="display: none"])'));
+    }
+
+    function showImage(index) {
+      const item = visibleItems[index];
+      const img = item.querySelector('img');
+      const title = item.querySelector('.image-title').textContent;
+      
+      modalImg.src = img.src;
+      modalImg.alt = img.alt;
+      modalDescription.textContent = descriptions[title] || "No description available.";
+      currentImageIndex = index;
+    }
+
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+
+    gallery.addEventListener('click', (e) => {
+      const clickedItem = e.target.closest('.gallery-item');
+      if (clickedItem) {
+        updateVisibleItems();
+        const index = visibleItems.indexOf(clickedItem);
+        showImage(index);
+        modal.style.display = 'block';
+      }
+    });
+
+    closeBtn.onclick = closeModal;
+
+    modal.onclick = (e) => {
+      if (e.target === modal || e.target === modalImg) {
+        closeModal();
+      }
+    };
+
+    prevArrow.onclick = (e) => {
+      e.stopPropagation();
+      currentImageIndex = (currentImageIndex - 1 + visibleItems.length) % visibleItems.length;
+      showImage(currentImageIndex);
+    };
+
+    nextArrow.onclick = (e) => {
+      e.stopPropagation();
+      currentImageIndex = (currentImageIndex + 1) % visibleItems.length;
+      showImage(currentImageIndex);
+    };
+
+    categoryButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const category = button.dataset.category;
+        filterGallery(category);
+        setActiveButton(button);
+        updateVisibleItems();
+      });
+    });
+
+    function filterGallery(category) {
+      const items = document.querySelectorAll('.gallery-item');
+      items.forEach(item => {
+        if (category === 'all' || item.dataset.category === category) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    function setActiveButton(activeButton) {
+      categoryButtons.forEach(button => {
+        button.classList.remove('active');
+      });
+      activeButton.classList.add('active');
+    }
+
+    // Initialize visible items
+    updateVisibleItems();
+
+    // Create neural network background
+    const svg = document.querySelector('.neural-network svg');
+    const neurons = [];
+    const connections = [];
+
+    function createNeuron(x, y) {
+      const neuron = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      neuron.setAttribute('cx', x);
+      neuron.setAttribute('cy', y);
+      neuron.setAttribute('r', '3');
+      neuron.setAttribute('fill', 'var(--accent-color)');
+      neuron.setAttribute('filter', 'url(#glow)');
+      svg.appendChild(neuron);
+      return neuron;
+    }
+
+    function createConnection(neuron1, neuron2) {
+      const connection = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      connection.setAttribute('x1', neuron1.getAttribute('cx'));
+      connection.setAttribute('y1', neuron1.getAttribute('cy'));
+      connection.setAttribute('x2', neuron2.getAttribute('cx'));
+      connection.setAttribute('y2', neuron2.getAttribute('cy'));
+      connection.setAttribute('stroke', 'var(--accent-color)');
+      connection.setAttribute('stroke-width', '0.5');
+      connection.setAttribute('opacity', '0.3');
+      svg.insertBefore(connection, svg.firstChild);
+      return connection;
+    }
+
+    function initNeuralNetwork() {
+      const width = svg.clientWidth;
+      const height = svg.clientHeight;
+      const numNeurons = 35;
+
+      for (let i = 0; i < numNeurons; i++) {
+        const x = Math.random() * (width + 50);
+        const y = Math.random() * (height + 50);
+        neurons.push(createNeuron(x, y));
+      }
+
+      for (let i = 0; i < neurons.length; i++) {
+        for (let j = i + 1; j < neurons.length; j++) {
+          if (Math.random() < 0.05) {
+            connections.push(createConnection(neurons[i], neurons[j]));
+          }
+        }
+      }
+    }
+
+    function animateNeuralNetwork() {
+      neurons.forEach((neuron, index) => {
+        const x = parseFloat(neuron.getAttribute('cx'));
+        const y = parseFloat(neuron.getAttribute('cy'));
+        const newX = x + ((Math.random() - 0.5) * 2) * 8;
+        const newY = y + ((Math.random() - 0.5) * 2) * 8;
+        neuron.setAttribute('cx', newX);
+        neuron.setAttribute('cy', newY);
+
+        connections.forEach(connection => {
+          if (connection.getAttribute('x1') === x.toString() && connection.getAttribute('y1') === y.toString()) {
+            connection.setAttribute('x1', newX);
+            connection.setAttribute('y1', newY);
+          } else if (connection.getAttribute('x2') === x.toString() && connection.getAttribute('y2') === y.toString()) {
+            connection.setAttribute('x2', newX);
+            connection.setAttribute('y2', newY);
+          }
+        });
+      });
+
+      requestAnimationFrame(animateNeuralNetwork);
+    }
+
+    initNeuralNetwork();
+    animateNeuralNetwork();
+
+    window.addEventListener('resize', () => {
+      svg.innerHTML = '';
+      neurons.length = 0;
+      connections.length = 0;
+      initNeuralNetwork();
+    });
+  </script>
+</body>
+</html>
