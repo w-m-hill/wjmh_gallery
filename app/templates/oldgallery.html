@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Gallery</title>
+</head>
+<body>
+    <h1>Photo Gallery</h1>
+    {% for category, photos in gallery.items() %}
+        <h2>{{ category }}</h2>
+        <div>
+            {% for photo, caption in photos %}
+                <div>
+                    <img src="{{ url_for('static', filename='photos/' + category + '/' + photo) }}" alt="{{ caption }}">
+                    <p>{{ caption }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</body>
+</html>
