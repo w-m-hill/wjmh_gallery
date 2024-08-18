@@ -319,14 +319,22 @@
     </div>
 
     <div class="gallery">
-    {% for category, photos in gallery.items() %}
-    	     {% for photo, caption in photos %}
-                <div class="gallery-item tall" data-category="{{ category }}">
-		<img src="{{ url_for('static', filename='photos/' + category + '/' + photo) }}" alt="{{ caption }}" width="800" height="800">
-		<div class="image-title">{{ caption }}</div>
-	      </div>
-            {% endfor %}
+{% for category, photos in gallery.items() %}
+    {% for photo, caption in photos %}
+        <div class="gallery-item 
+            {% if category == 'digital' %}
+                small
+            {% elif category == 'calligraphy' %}
+                tall
+            {% else %}
+                large
+            {% endif %}" 
+            data-category="{{ category }}">
+            <img src="{{ url_for('static', filename='photos/' + category + '/' + photo) }}" alt="{{ caption }}" width="800" height="800">
+            <div class="image-title">{{ caption }}</div>
+        </div>
     {% endfor %}
+{% endfor %}
 
       
     </div>
