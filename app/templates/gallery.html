@@ -321,7 +321,7 @@
     <div class="gallery">
     {% for category, photos in gallery.items() %}
     	     {% for photo, caption in photos %}
-                <div class="gallery-item large" data-category="{{ category }}">
+                <div class="gallery-item tall" data-category="{{ category }}">
 		<img src="{{ url_for('static', filename='photos/' + category + '/' + photo) }}" alt="{{ caption }}" width="800" height="800">
 		<div class="image-title">{{ caption }}</div>
 	      </div>
